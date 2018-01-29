@@ -3,12 +3,9 @@ version: 2
 # https://circleci.com/blog/how-to-build-a-docker-image-on-circleci-2-0/
 jobs:
   build:
-    working_directory: /app
-    docker:
-      - image: docker:18.01.0-ce-git
+    machine: true
     steps:
       - checkout
-      - setup_remote_docker
       - run:
           name: Run inndb_ruby-sample
           command: |
