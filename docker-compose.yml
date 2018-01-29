@@ -1,0 +1,24 @@
+version: "2.2"
+
+services:
+  mysql:
+    image: mysql:${VERSION:-5.7}
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./initdb/:/docker-entrypoint-initdb.d
+      - ./task_sql/:/work
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    command: "--innodb-file-per-table"
+  innodb_ruby:
+    image: yokogawa/innodb_ruby
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./output:/work
+    tty: true
+    stdin_open: true
+    command: irb
+
+volumes:
+  mysql-data:
+    driver: local
