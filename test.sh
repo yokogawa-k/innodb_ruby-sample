@@ -2,6 +2,7 @@
 
 set -u
 
+export TERM="xterm-256color"
 TARGET_INNODB_FILE=/var/lib/mysql/demo/demo1.ibd
 
 function setup_mysql() {
