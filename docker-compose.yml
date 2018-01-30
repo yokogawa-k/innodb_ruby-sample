@@ -3,6 +3,7 @@ version: "2.2"
 services:
   mysql:
     image: mysql:${VERSION:-5.7}
+    container_name: mysql
     volumes:
       - mysql-data:/var/lib/mysql
       - ./initdb/:/docker-entrypoint-initdb.d
@@ -12,6 +13,7 @@ services:
     command: "--innodb-file-per-table"
   innodb_ruby:
     image: yokogawa/innodb_ruby
+    container_name: innodb_ruby
     volumes:
       - mysql-data:/var/lib/mysql
       - ./output:/work
