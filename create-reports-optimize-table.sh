@@ -55,15 +55,15 @@ function check_inode_change() {
   local AFTER=$2
   echo >> ${OUTPUT_FILE}
   if [[ $1 -ne $2 ]]; then
-    echo "**Inode changed** (file copied)" >> ${OUTPUT_FILE}
+    echo "**Inode changed** (file copied)  " >> ${OUTPUT_FILE}
   else
-    echo "Inode Not changed" >> ${OUTPUT_FILE}
+    echo "Inode Not changed  " >> ${OUTPUT_FILE}
   fi
 }
 
 docker-compose down -v
 
-BASE_DIR="./optimize-table"
+BASE_DIR="report/optimize-table"
 SVG_DIR="${BASE_DIR}/svg"
 OUTPUT_FILE="${BASE_DIR}/README.md"
 mkdir -p "${SVG_DIR}"
@@ -72,7 +72,8 @@ echo "## ${QUERY}" > ${OUTPUT_FILE}
 
 for i in 5.5.{46..59} 5.6.{27..39} 5.7.{9..21}; do
   export VERSION=${i}
-  echo "## MySQL ${VERSION}" >> ${OUTPUT_FILE}
+  echo "### MySQL ${VERSION}" >> ${OUTPUT_FILE}
+  echo >> ${OUTPUT_FILE}
   setup_mysql
   
   set -x
@@ -87,8 +88,6 @@ for i in 5.5.{46..59} 5.6.{27..39} 5.7.{9..21}; do
   wait_flush
 
   alter_check 
-  echo >> ${OUTPUT_FILE}
-  echo "### ${VERSION}" >> ${OUTPUT_FILE}
   BEFORE_INODE=$(docker exec mysql stat -c %i ${TARGET_INNODB_FILE})
   BEFORE_SIZE=$(docker exec mysql stat -c %s ${TARGET_INNODB_FILE})
   docker exec mysql mysql demo -e "${QUERY}"
@@ -96,10 +95,11 @@ for i in 5.5.{46..59} 5.6.{27..39} 5.7.{9..21}; do
   AFTER_INODE=$(docker exec mysql stat -c %i ${TARGET_INNODB_FILE})
   AFTER_SIZE=$(docker exec mysql stat -c %s ${TARGET_INNODB_FILE})
   check_inode_change BEFORE_INODE AFTER_INODE
-  echo "size: ${BEFORE_SIZE} => ${AFTER_SIZE}" >> ${OUTPUT_FILE}
+  echo "size: ${BEFORE_SIZE} => ${AFTER_SIZE}  " >> ${OUTPUT_FILE}
   save_svg ${VERSION}
   
   docker-compose down -v
+  echo >> ${OUTPUT_FILE}
   
   set +x
 done
